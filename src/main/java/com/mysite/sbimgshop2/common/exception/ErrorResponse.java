@@ -2,6 +2,11 @@ package com.mysite.sbimgshop2.common.exception;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -39,5 +44,19 @@ public class ErrorResponse {
 				.errors(errors)
 				.timestamp(LocalDateTime.now())
 				.build();
+	}
+	
+	// 맵으로 변환
+	public static Map<String, String> bindingResultToMap(BindingResult bindingResult) {
+		return bindingResult.getFieldErrors().stream()
+				.collect(Collectors.toMap(
+						FieldError::getField,
+						fieldError -> Optional
+										.ofNullable(fieldError.getDefaultMessage())
+										.orElse("Invalid value"),
+										(existing, replacement) -> existing 
+										// 중복된 필드의 경우 첫 번째 에러 메시지 유지
+						));
+	
 	}
 }
