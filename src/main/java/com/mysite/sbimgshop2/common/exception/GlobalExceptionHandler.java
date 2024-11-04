@@ -1,9 +1,11 @@
 package com.mysite.sbimgshop2.common.exception;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -19,6 +21,18 @@ public class GlobalExceptionHandler {
 		log.error("BusinessException", e);
 		
 		ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode());
+		
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(CustomValidationException.class)
+	protected ResponseEntity<ErrorResponse> handleValidationException(CustomValidationException e) {
+		log.error("Validation Exception : ", e);
+		
+		BindingResult bindingResult = e.getBindingResult();
+		Map<String, String> errors = ErrorResponse.bindingResultToMap(bindingResult);
+		
+		ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode(), errors);
 		
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
