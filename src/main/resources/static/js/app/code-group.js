@@ -8,8 +8,23 @@ $(document).ready(function() {
     })
 
     $("#codeGroupRegisterId").click(function () {
-        console.log("codeGroupRegister")
-    })
+		const codeGroupObj = {
+			groupCode : $(groupCodeId).val(),
+			groupName : $(groupCodeId).val(),
+		};
+        console.log(JSON.stringify(codeGroupObj));
+		
+		fetch("/codeGroups", {
+			method : "POST",
+			headers : {
+				"Content-Type" : "application/Json",
+			},
+			body : JSON.stringify(codeGroupObj)
+    	})
+		.then(response => response.jason())
+		.then(data => console.log(data))
+		.catch(error => console.error("error, error"))
+	})
 
     $("#codeGroupDeleteId").click(function () {
         console.log("codeGroupDelete")

@@ -1,8 +1,12 @@
 package com.mysite.sbimgshop2.codegroups;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public class CodeGroupMapper {
+public interface CodeGroupMapper {
 
+	// pk가 group_code 임에 주의
+	@Insert("INSERT INTO code_group (group_code, group_name) VALUES (#{groupCode}, #{groupName})")
+	void create(CodeGroupDTO codeGroupDTO);
 }
