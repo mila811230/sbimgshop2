@@ -17,10 +17,10 @@ import lombok.Getter;
 @Builder
 public class ErrorResponse {
 
-	private String code;
-	private String message;
-	private int status;
-	private LocalDateTime timestamp;
+	private final String code;
+	private final String message;
+	private final int status;
+	private final LocalDateTime timestamp;
 	
 	// 해당 필드가 null일 경우 JSON 직렬화 시 해당 필드는 제외시켜 응답 크기를 줄임
 	@JsonInclude(JsonInclude.Include.NON_NULL)
