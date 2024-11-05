@@ -25,5 +25,4 @@ public interface CodeGroupMapper {
 	@Delete("DELETE FROM code_group WHERE group_code = #{groupCode}")
 		void delete(@Param("groupCode") String groupCode);
 				
-
 }
