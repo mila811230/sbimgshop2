@@ -22,7 +22,8 @@ public class CodeGroupDTO {
 	@NotBlank
     @Size(min = 3, max = 3)
 	private String groupName;
-	private String useYn;
+	
+	private String useYn = "Y";
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime createdAt;
