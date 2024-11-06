@@ -41,8 +41,7 @@ public class CodeGroupController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<PageDTO<CodeGroupDTO>> getCodeGroups(
-			@RequestParam(name="page", defaultValue = "1") int page,
+	public ResponseEntity<PageDTO<CodeGroupDTO>> getCodeGroups(@RequestParam(name="page", defaultValue = "1") int page,
 			@RequestParam(name="size", defaultValue = "10") int size, Model model) {
 		PageDTO<CodeGroupDTO> pageDTO = codeGroupService.getCodeGroups(page, size);
 		
