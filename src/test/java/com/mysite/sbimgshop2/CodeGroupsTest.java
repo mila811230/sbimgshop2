@@ -30,7 +30,7 @@ public class CodeGroupsTest {
 			codeGroupDTO.setGroupName(groupName);
 			
 			if(!codeGroupMapper.exists(groupCode)) {
-				codeGroupMapper.create(codeGroupDTO);
+				codeGroupMapper.insert(codeGroupDTO);
 				log.info("코드그룹: {}, 코드이름: {}", groupCode, groupName);
 			}else {
 				log.warn("코드그룹이 존재하여 스킵: {}", groupCode);
@@ -59,7 +59,7 @@ public class CodeGroupsTest {
 	
 	@Test
 	void cleanupCodeGroups() {
-		List<CodeGroupDTO> codeGroups = codeGroupMapper.findAll();
+		List<CodeGroupDTO> codeGroups = codeGroupMapper.selectAll();
 		for(CodeGroupDTO group : codeGroups) {
 			codeGroupMapper.delete(group.getGroupCode());
 		}
