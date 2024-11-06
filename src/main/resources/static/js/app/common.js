@@ -44,3 +44,5 @@ function getUrlParameter(name, defaultValue) {
 	// 숫자로 변환하려 반환
 	return parseInt(value);
 }
+
+
