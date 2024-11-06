@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $("#codeGroupListId").click(function () {
+		
 		// 페이지와 사이즈 가져오기 (기본값: page=1, size=10)
 		const page = getUrlParameter("page", 1);
 		const size = getUrlParameter("size", PAGE_SIZE);
@@ -158,16 +159,33 @@ $(document).ready(function () {
         const value = $(this).val().trim();
         const errorElement = $(`#${field}Error`);
 
-        // 입력값이 변경될 때마다 해당 필드의 유효성 검사
+        // 공통 - 빈 값 체크
         if (!value) {
             $(this).addClass('is-invalid');
             errorElement.text(`${field === 'groupCode' ? messages.required.groupCode : messages.required.groupName}`).show();
-        } else if (value.length !== 3) {
-            $(this).addClass('is-invalid');
-            errorElement.text(`${field === 'groupCode' ? messages.size.groupCode : messages.size.groupName}`).show();
-        } else {
-            $(this).removeClass('is-invalid');
-            errorElement.hide().text('');
+     	 return;
         }
+		
+		// 그룹코드와 그룹명의 길이 체크를 분리
+		if(field === "groupCode") {
+			// 그룹코드는 정확히 3자리
+			if(value.length !== 3) {
+				$(this).addClass("is-invalid");
+				errorElement.text(message.size.groupCode).show();
+			} else {
+				$(this).removeClass("is-invalid");
+				errorElement.hide().text("");
+			}
+		} else if (field === "groupName") {
+			// 그룹명은 3-30자 사이
+			if (value.length < 3 || value.length > 30) {
+				$(this).addClass("is-invalid");
+				errorElement.text(message.size.groupName).show();
+			} else {
+				$(this).removeClass("is-invalid");
+				errorElemen.hide().text("");
+			}
+		}
     });
 });
+

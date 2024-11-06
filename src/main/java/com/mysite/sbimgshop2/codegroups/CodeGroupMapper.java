@@ -14,7 +14,7 @@ public interface CodeGroupMapper {
 	
 	// pk가 group_code 임에 주의
 	@Insert("INSERT INTO code_group (group_code, group_name) VALUES (#{groupCode}, #{groupName})")
-		void insert(CodeGroupDTO codeGroupDTO);
+		void insert(CreateCodeGroupRequest createCodeGroupRequest);
 
 	
 	@Select("SELECT group_code, group_name, use_yn, is_deleted, created_at, updated_at " +

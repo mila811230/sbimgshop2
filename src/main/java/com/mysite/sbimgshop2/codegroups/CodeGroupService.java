@@ -4,11 +4,13 @@ import com.mysite.sbimgshop2.common.dto.PageDTO;
 
 public interface CodeGroupService {
 	
-	 void createCodeGroup(CodeGroupDTO createCodeGroupDTO);
+	 void createCodeGroup(CreateCodeGroupRequest createCodeGroupRequest);
+	 
 		//  List<CodeGroupDTO> findBy
-		PageDTO getCodeGroups(int page, int size);
+	 
+		PageDTO<CodeGroupResponse> getCodeGroups(int page, int size);
 		
-		PageDTO getCodeGroups(String codeGroup, String codeName, int page, int size);
+		PageDTO <CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, int page, int size);
 		
 		CodeGroupDTO getCodeGroup(String groupCode);
 }
