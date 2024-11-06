@@ -1,6 +1,7 @@
 package com.mysite.sbimgshop2.codegroups;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -89,4 +90,38 @@ public class CodeGroupServiceImpl implements CodeGroupService {
 		
 		return codeGroupMapper.selectByGroupCode(groupCode).orElseThrow(() -> new BusinessException(ErrorCode.NO_DATA_FOUND));
 		}
+	
+	@Override
+	public CodeGroupDTO updateCodeGroup(String groupCode, UpdateCodeGroupRequest updateCodeGroupRequest) {
+		
+		// TODO 소유자 또는 관리자 권한 체크
+		
+		if(!codeGroupMapper.exists(groupCode)) {
+			throw new BusinessException(ErrorCode.NO_DATA_FOUND);
+		}
+		
+		codeGroupMapper.updateCodeGroup(groupCode, updateCodeGroupRequest);
+		
+		return codeGroupMapper.selectByGroupCode(groupCode).orElseThrow();
+	}
+	
+	@Override
+	public CodeGroupDTO partialUpdateCodeGroup(String groupCode, Map<String, Object> updates) {
+		
+		// TODO 소유자 또는 관리자 권한 체크
+		
+		if(!codeGroupMapper.exists(groupCode)) {
+			throw new BusinessException(ErrorCode.NO_DATA_FOUND);
+		
+		}
+		
+		codeGroupMapper.partialUpdateCodeGroup(groupCode, updates);
+		
+		return codeGroupMapper.selectByGroupCode(groupCode).orElseThrow();
+	}
+	
+	@Override
+	public void deleteCodeGroup(CodeGroupDTO codeGroupDTO) {
+		codeGroupMapper.delete(codeGroupDTO.getGroupCode());
+	}
 }

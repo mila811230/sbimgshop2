@@ -1,6 +1,7 @@
 package com.mysite.sbimgshop2.codegroups;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Delete;
@@ -8,13 +9,14 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface CodeGroupMapper {
 	
 	// pk가 group_code 임에 주의
 	@Insert("INSERT INTO code_group (group_code, group_name) VALUES (#{groupCode}, #{groupName})")
-		void insert(CreateCodeGroupRequest createCodeGroupRequest);
+		int insert(CreateCodeGroupRequest createCodeGroupRequest);
 
 	
 	@Select("SELECT group_code, group_name, use_yn, is_deleted, created_at, updated_at " +
@@ -33,9 +35,17 @@ public interface CodeGroupMapper {
 		boolean exists(@Param("groupCode") String groupCode);
 	
 	@Delete("DELETE FROM code_group WHERE group_code = #{groupCode}")
-		void delete(@Param("groupCode") String groupCode);
+		int delete(@Param("groupCode") String groupCode);
 	
 	@Select("SELECT count(*) FROM code_group")
 		int countTotal();
+	
+	 @Update("UPDATE code_group SET group_name = #{updateCodeGroupRequest.groupName}, "
+	 		+ "use_yn = #{updateCodeGroupRequest.useYn} " 
+			+ "WHERE group_code = #{groupCode}")
+	    int updateCodeGroup(@Param("groupCode") String groupCode, 
+    						@Param("updateCodeGroupRequest") UpdateCodeGroupRequest updateCodeGroupRequest);
+	    int partialUpdateCodeGroup(@Param("groupCode") String groupCode, 
+	    						   @Param("updates") Map<String, Object> updateCodeGroupRequest);
 				
 }
