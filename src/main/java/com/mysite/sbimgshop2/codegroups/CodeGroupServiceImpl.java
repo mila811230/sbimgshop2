@@ -58,7 +58,7 @@ public class CodeGroupServiceImpl implements CodeGroupService {
 	}
 	
 	@Override
-	public PageDTO<CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, int page, int size) {
+	public PageDTO<CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, String useYn, int page, int size) {
 		
 		int offset = (page - 1) * size;
 		int totalElements = codeGroupMapper.countTotal();
@@ -67,6 +67,7 @@ public class CodeGroupServiceImpl implements CodeGroupService {
 		CodeGroupSearchCondition condition = CodeGroupSearchCondition.builder()
 				.groupCode(codeGroup)
 				.groupName(codeName)
+				.useYn(useYn)
 				.build();
 		
 		List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.selectByCondition(condition, offset, size);

@@ -1,22 +1,17 @@
 package com.mysite.sbimgshop2.codegroups;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.mysite.sbimgshop2.common.dto.PageDTO;
 import com.mysite.sbimgshop2.common.exception.BusinessException;
 import com.mysite.sbimgshop2.common.exception.CustomValidationException;
@@ -86,7 +81,8 @@ public class CodeGroupController {
      */
 	
 	@PostMapping
-	public ResponseEntity<CodeGroupResponse> createCodeGroup(@Valid @RequestBody CreateCodeGroupRequest createCodeGroupRequest,
+	public ResponseEntity<CodeGroupResponse> createCodeGroup(
+			@Valid @RequestBody CreateCodeGroupRequest createCodeGroupRequest,
 												BindingResult bindingResult) {
 		log.info("register : {}", createCodeGroupRequest);
 		
@@ -130,27 +126,29 @@ public class CodeGroupController {
      */
 	
 	@GetMapping
-	public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(@RequestParam(name="page", defaultValue = "1") int page,
-																@RequestParam(name="size", defaultValue = "10") int size, Model model) {
+	public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(
+				@RequestParam(name="page", defaultValue = "1") int page,
+				@RequestParam(name="size", defaultValue = "10") int size) {
 		
 		// PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(page, size);
 		try {
 			// 페이지 파라미터 유효성 검사
-			int validatePage = page < 1 ? 1 : page;
+			int validatedPage = page < 1 ? 1 : page;
 			
 			// 사이즈 파라미터 유효성 검사
-			int validateSize;
-			if(size < 10 ) {
-				validateSize = 1;
+			int validatedSize;
+			if(size < 1) {
+				validatedSize = 1;
 			} else if(size > 50) {
-				validateSize = 50;	
+				validatedSize = 50;	
 			} else {
-				validateSize = size;
+				validatedSize = size;
 			}
 		
 		PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(validatedPage, validatedSize);
 		
 		return ResponseEntity.ok(pageDTO);		
+		
 	} catch (MethodArgumentTypeMismatchException e) {
 		throw new BusinessException(ErrorCode.VALIDATION_ERROR, e);
 	} catch (NullPointerException e) {
@@ -217,12 +215,11 @@ public class CodeGroupController {
 	public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(
 			@RequestParam(value = "groupCode", required = false) String groupCode,
 			@RequestParam(value = "groupName", required = false) String groupName,
+			@RequestParam(value = "useYn", required = false) String useYn,
 			@RequestParam(name = "page", defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "10")int size) {
 		
 		// PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, page, size);
-		
-		// TODO useYn 필드 검색에 추가
 		
 		try {
 			// 페이지 파라미터 유효성 검사
@@ -238,16 +235,17 @@ public class CodeGroupController {
                 validatedSize = size;
             }
 	
-            PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, validatedPage, validatedSize);
+            PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, useYn, validatedPage, validatedSize);
             
 		return ResponseEntity.ok(pageDTO);
+		
 	} catch (MethodArgumentTypeMismatchException e) {
 		throw new BusinessException(ErrorCode.VALIDATION_ERROR, e);
 	} catch (NullPointerException e) {
-		throw new BusinessException(ErrorCode.VALIDATION_ERROR, e);
-		}
-	}
-	
+        throw new BusinessException(ErrorCode.VALIDATION_ERROR, e);
+        }
+
+    }
 	 /**
      * REST API 테스트 케이스:
      *
@@ -295,7 +293,8 @@ public class CodeGroupController {
      */
 	
 	@GetMapping("/{groupCode}")
-	public ResponseEntity<CodeGroupResponse> getCodeGroup (@PathVariable("groupCode") String groupCode) {
+	public ResponseEntity<CodeGroupResponse> getCodeGroup (
+			@PathVariable("groupCode") String groupCode) {
 		
 		return ResponseEntity.ok(CodeGroupResponse.from(codeGroupService.getCodeGroup(groupCode)));
 	}
@@ -439,11 +438,11 @@ public class CodeGroupController {
 		}).containsValue(null);
 	}
 	
-	private Map<String, Object> convertToNullMap (UpdateCodeGroupRequest request) {
+	private Map<String, Object> convertToNonNullMap (UpdateCodeGroupRequest request) {
 		
 		return objectMapper.convertValue(request, new TypeReference<Map<String, Object>>() {
 			
 		}).entrySet().stream().filter(entry -> entry.getValue() != null)
-				.collect(Collerctors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 }
